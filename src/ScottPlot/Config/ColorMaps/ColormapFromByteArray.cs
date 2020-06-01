@@ -12,9 +12,16 @@ namespace ScottPlot.Config.ColorMaps
             byte[,] output = new byte[intensities.Length, 3];
             for (int i = 0; i < intensities.Length; i++)
             {
+                if (intensities[i] < 0)
+                {
+                    output[i, 0] = (byte)0;
+                    output[i, 1] = (byte)0;
+                    output[i, 2] = (byte)0;
+                    continue;
+                }
                 for (int j = 0; j < 3; j++)
                 {
-                    output[i, j] = cmap[(int)(intensities[i] * 255), j];
+                    output[i, j] = intensities[i] >= 0 ? cmap[(int)(intensities[i] * 255), j] : (byte)0;
                 }
             }
             return output;
@@ -22,7 +29,7 @@ namespace ScottPlot.Config.ColorMaps
 
         public override int[] IntensitiesToARGB(double[] intensities)
         {
-            return intensities.AsParallel().AsOrdered().Select(i => i > 0 ? RGBToARGB(new byte[] { cmap[(int)(i * 255), 0], cmap[(int)(i * 255), 1], cmap[(int)(i * 255), 2] }) : unchecked((int)0xFF000000)).ToArray();
+            return intensities.AsParallel().AsOrdered().Select(i => i >= 0 ? RGBToARGB(new byte[] { cmap[(int)(i * 255), 0], cmap[(int)(i * 255), 1], cmap[(int)(i * 255), 2] }) : unchecked((int)0xFF000000)).ToArray();
         }
 
         protected abstract byte[,] cmap { get; }

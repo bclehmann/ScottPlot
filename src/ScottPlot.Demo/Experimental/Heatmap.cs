@@ -100,7 +100,7 @@ namespace ScottPlot.Demo.Experimental
                 {
                     for (int j = 0; j < xs.Length; j++)
                     {
-                        intensities[i, j] = (Math.Sin(i * .2) + Math.Cos(j * .2)) * 100;
+                        intensities[i, j] = Math.Sqrt(i * i + j * j);
                     }
                 }
 
