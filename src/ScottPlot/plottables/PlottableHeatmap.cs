@@ -24,6 +24,7 @@ namespace ScottPlot
         public string label;
         private double[] axisOffsets;
         private double[] axisMultipliers;
+        private bool contour;
 
         private Bitmap bmp;
         private Bitmap scale;
@@ -32,7 +33,7 @@ namespace ScottPlot
         private SolidBrush brush;
         private Pen pen;
 
-        public PlottableHeatmap(double[,] intensities, Config.ColorMaps.Colormaps colorMap, string label, double[] axisOffsets, double[] axisMultipliers)
+        public PlottableHeatmap(double[,] intensities, Config.ColorMaps.Colormaps colorMap, string label, double[] axisOffsets, double[] axisMultipliers, bool contour)
         {
             this.width = intensities.GetUpperBound(1) + 1;
             this.height = intensities.GetUpperBound(0) + 1;
@@ -45,9 +46,32 @@ namespace ScottPlot
             this.axisMultipliers = axisMultipliers;
             this.colorMap = colorMap;
             this.label = label;
+            this.contour = contour;
 
 
             this.intensitiesNormalized = Normalize(intensitiesFlattened);
+            if (contour)
+            {
+                int quanta = 5;
+                this.intensitiesNormalized = this.intensitiesNormalized.AsParallel().AsOrdered().Select(i => Math.Floor(quanta * i) / quanta).ToArray();
+
+                int edgeSize = 1;
+                for (int i = 0; i < intensities.GetLength(0) - intensities.GetLength(0) % edgeSize - 1; i += edgeSize)
+                {
+                    for (int j = 0; j < intensities.GetLength(1) - intensities.GetLength(1) % edgeSize - 1; j += edgeSize)
+                    {
+                        double currColor = intensitiesNormalized[i * intensities.GetLength(1) + j];
+                        if (currColor == -1)
+                        {
+                            continue;
+                        }
+                        if (intensitiesNormalized[(i + edgeSize) * intensities.GetLength(1) + j] != currColor || intensitiesNormalized[i * intensities.GetLength(1) + j + edgeSize] != currColor)
+                        {
+                            intensitiesNormalized[i * intensities.GetLength(1) + j] = -1;
+                        }
+                    }
+                }
+            }
 
             int[] flatARGB = IntensityToColor(this.intensitiesNormalized, colorMap);
 

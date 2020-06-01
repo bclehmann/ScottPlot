@@ -22,7 +22,7 @@ namespace ScottPlot.Config.ColorMaps
 
         public override int[] IntensitiesToARGB(double[] intensities)
         {
-            return intensities.AsParallel().AsOrdered().Select(i => RGBToARGB(new byte[] { cmap[(int)(i * 255), 0], cmap[(int)(i * 255), 1], cmap[(int)(i * 255), 2] })).ToArray();
+            return intensities.AsParallel().AsOrdered().Select(i => i > 0 ? RGBToARGB(new byte[] { cmap[(int)(i * 255), 0], cmap[(int)(i * 255), 1], cmap[(int)(i * 255), 2] }) : unchecked((int)0xFF000000)).ToArray();
         }
 
         protected abstract byte[,] cmap { get; }

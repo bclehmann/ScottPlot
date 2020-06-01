@@ -82,5 +82,30 @@ namespace ScottPlot.Demo.Experimental
                 plt.PlotHeatmap(imageData);
             }
         }
+
+        public class ContourHeatmap : PlotDemo, IPlotDemo
+        {
+            public string name { get; } = "Contour Heatmap";
+            public string description { get; } = "You can also create contour heatmaps";
+
+            public void Render(Plot plt)
+            {
+                Random rand = new Random();
+                int[] xs = Enumerable.Range(0, 100).ToArray();
+                int[] ys = Enumerable.Range(0, 100).ToArray();
+
+                double[,] intensities = new double[ys.Length, xs.Length];
+
+                for (int i = 0; i < ys.Length; i++)
+                {
+                    for (int j = 0; j < xs.Length; j++)
+                    {
+                        intensities[i, j] = (Math.Sin(i * .2) + Math.Cos(j * .2)) * 100;
+                    }
+                }
+
+                plt.PlotHeatmap(intensities, contour: true);
+            }
+        }
     }
 }
