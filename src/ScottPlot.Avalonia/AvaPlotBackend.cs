@@ -18,13 +18,16 @@ namespace ScottPlot.Avalonia
         private global::Avalonia.Media.Imaging.Bitmap buffer;
         private long lastUpdated = 0;
         private long lastDrawn = 0;
-        private Timer drawTimer;
+        private DispatcherTimer drawTimer;
         private bool is_updating = false;
 
         public AvaPlotBackend(AvaPlot view)
         {
             this.view = view;
-            drawTimer = new Timer((object state) => Draw(), null, 0, 16);
+            drawTimer = new DispatcherTimer();
+            drawTimer.Interval = TimeSpan.FromMilliseconds(16);
+            drawTimer.Tick += (object sender, EventArgs e) => Draw();
+            drawTimer.Start();
         }
 
         private void Draw()
@@ -135,7 +138,11 @@ namespace ScottPlot.Avalonia
                 {
                     return false;
                 }
-                is_updating = true; buffer = BmpImageFromBmp(bmp); lastUpdated = DateTime.UtcNow.Ticks; is_updating = false; return true;
+                is_updating = true;
+                buffer = BmpImageFromBmp(bmp);
+                lastUpdated = DateTime.UtcNow.Ticks;
+                is_updating = false;
+                return true;
             };
             Task.Run(() => taskFunc(pltBmp));
         }
