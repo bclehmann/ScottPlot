@@ -63,7 +63,7 @@ namespace ScottPlot.Interactive
                 if (!(skipIfCurrentlyRendering && currentlyRendering))
                 {
                     currentlyRendering = true;
-                    await SetImagePlot(lowQuality);
+                    SetImagePlot(lowQuality);
                     currentlyRendering = false;
                     Rendered?.Invoke(null, null);
                 }

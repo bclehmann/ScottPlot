@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using ScottPlot.Interactive;
 using Ava = global::Avalonia;
@@ -11,9 +15,25 @@ namespace ScottPlot.Avalonia
     internal class AvaPlotBackend : ScottPlot.Interactive.ControlBackend
     {
         private AvaPlot view;
+        private global::Avalonia.Media.Imaging.Bitmap buffer;
+        private long lastUpdated = 0;
+        private long lastDrawn = 0;
+        private Timer drawTimer;
+        private bool is_updating = false;
+
         public AvaPlotBackend(AvaPlot view)
         {
             this.view = view;
+            drawTimer = new Timer((object state) => Draw(), null, 0, 16);
+        }
+
+        private void Draw()
+        {
+            if (buffer != null && lastDrawn < lastUpdated)
+            {
+                view.Find<Ava.Controls.Image>("imagePlot").Source = buffer;
+                lastDrawn = DateTime.UtcNow.Ticks;
+            }
         }
 
         public override void InitializeScottPlot()
@@ -108,8 +128,16 @@ namespace ScottPlot.Avalonia
         public override async Task SetImagePlot(bool lowQuality)
         {
             var pltBmp = plt.GetBitmap(true, lowQuality);
-            var bmp = await Task.Run( () => BmpImageFromBmp(pltBmp ) );
-            view.Find<Ava.Controls.Image>("imagePlot").Source = bmp;
+            var imagePlot = view.Find<Ava.Controls.Image>("imagePlot");
+            System.Func<System.Drawing.Bitmap, Task<bool>> taskFunc = async (System.Drawing.Bitmap bmp) =>
+            {
+                if (is_updating)
+                {
+                    return false;
+                }
+                is_updating = true; buffer = BmpImageFromBmp(bmp); lastUpdated = DateTime.UtcNow.Ticks; is_updating = false; return true;
+            };
+            Task.Run(() => taskFunc(pltBmp));
         }
 
         public override void OpenInNewWindow()
@@ -125,12 +153,19 @@ namespace ScottPlot.Avalonia
         {
             using (var memory = new System.IO.MemoryStream())
             {
-                bmp.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-                memory.Position = 0;
+                while (true)
+                {
+                    try
+                    {
+                        bmp.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+                        memory.Position = 0;
 
-                var bitmapImage = new Ava.Media.Imaging.Bitmap(memory);
+                        var bitmapImage = new Ava.Media.Imaging.Bitmap(memory);
 
-                return bitmapImage;
+                        return bitmapImage;
+                    }
+                    catch (InvalidOperationException e) { }
+                }
             }
         }
 
