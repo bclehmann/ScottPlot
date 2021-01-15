@@ -23,6 +23,10 @@ namespace ScottPlot.Plottable
         public int YAxisIndex { get => 0; set { } }
         public int Width = 20;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public Colorbar(Colormap colormap = null)
         {
             UpdateColormap(colormap ?? Colormap.Viridis);

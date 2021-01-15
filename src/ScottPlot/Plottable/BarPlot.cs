@@ -46,6 +46,10 @@ namespace ScottPlot.Plottable
         public bool HorizontalOrientation { get => !VerticalOrientation; set => VerticalOrientation = !value; }
         public bool ShowValuesAboveBars;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public BarPlot(double[] xs, double[] ys, double[] yErr, double[] yOffsets)
         {
             if (ys is null || ys.Length == 0)

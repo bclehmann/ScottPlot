@@ -47,6 +47,10 @@ namespace ScottPlot.Plottable
         public double DragLimitMax = double.PositiveInfinity;
         public event EventHandler Dragged = delegate { };
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public AxisLine(bool isHorizontal)
         {
             IsHorizontal = isHorizontal;

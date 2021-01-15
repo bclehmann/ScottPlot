@@ -23,6 +23,10 @@ namespace ScottPlot.Plottable
         public Color HatchColor = Color.Transparent;
         public HatchStyle HatchStyle = HatchStyle.None;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public Polygon(double[] xs, double[] ys)
         {
             Xs = xs;

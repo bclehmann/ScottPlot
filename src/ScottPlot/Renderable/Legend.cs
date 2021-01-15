@@ -37,6 +37,10 @@ namespace ScottPlot.Renderable
         private float SymbolPad { get { return Font.Size / 3; } }
         private float MarkerWidth { get { return Font.Size / 2; } }
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public void Render(PlotDimensions dims, Bitmap bmp, bool lowQuality = false)
         {
             if (IsVisible is false || LegendItems is null || LegendItems.Length == 0)

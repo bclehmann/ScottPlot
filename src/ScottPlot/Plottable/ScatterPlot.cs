@@ -38,6 +38,10 @@ namespace ScottPlot.Plottable
         public int? MinRenderIndex { set { throw new NotImplementedException(); } }
         public int? MaxRenderIndex { set { throw new NotImplementedException(); } }
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public ScatterPlot(double[] xs, double[] ys, double[] errorX = null, double[] errorY = null)
         {
             Xs = xs;

@@ -1,4 +1,6 @@
-﻿namespace ScottPlot.Plottable
+﻿using System;
+
+namespace ScottPlot.Plottable
 {
     public interface IPlottable
     {
@@ -7,6 +9,7 @@
 
         int XAxisIndex { get; set; }
         int YAxisIndex { get; set; }
+        Guid ID { get; }
 
         /// <summary>
         /// Returns items to show in the legend. Most plottables return a single item. in this array will appear in the legend.

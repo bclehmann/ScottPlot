@@ -23,6 +23,10 @@ namespace ScottPlot.Plottable
         public int XAxisIndex { get; set; } = 0;
         public int YAxisIndex { get; set; } = 0;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public override string ToString() => $"PlottableImage Size(\"{Bitmap.Size}\") at ({X}, {Y})";
         public AxisLimits GetAxisLimits() => new AxisLimits(X, X, Y, Y);
         public LegendItem[] GetLegendItems() => null;

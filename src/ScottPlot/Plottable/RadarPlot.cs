@@ -24,6 +24,10 @@ namespace ScottPlot.Plottable
         public bool ShowAxisValues { get; set; } = true;
         public RadarAxis AxisType { get; set; } = RadarAxis.Circle;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public RadarPlot(double[,] values, Color[] lineColors, Color[] fillColors, bool independentAxes, double[] maxValues = null)
         {
             this.LineColors = lineColors;

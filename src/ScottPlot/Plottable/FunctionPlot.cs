@@ -25,6 +25,10 @@ namespace ScottPlot.Plottable
         public string Label;
         public Color Color = Color.Black;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public FunctionPlot(Func<double, double?> function)
         {
             Function = function;

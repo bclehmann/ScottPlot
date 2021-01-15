@@ -32,6 +32,10 @@ namespace ScottPlot.Plottable
         public int XAxisIndex { get; set; } = 0;
         public int YAxisIndex { get; set; } = 0;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public PiePlot(double[] values, string[] groupNames, Color[] colors)
         {
             Values = values;

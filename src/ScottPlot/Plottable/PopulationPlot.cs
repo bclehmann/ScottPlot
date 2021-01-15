@@ -27,6 +27,10 @@ namespace ScottPlot.Plottable
         public DisplayItems DataFormat = DisplayItems.BoxAndScatter;
         public BoxStyle DataBoxStyle = BoxStyle.BoxMedianQuartileOutlier;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public PopulationPlot(PopulationMultiSeries groupedSeries)
         {
             MultiSeries = groupedSeries;

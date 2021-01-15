@@ -39,6 +39,10 @@ namespace ScottPlot.Plottable
         public AxisLimits GetAxisLimits() => new AxisLimits(double.NaN, double.NaN, double.NaN, double.NaN);
         public LegendItem[] GetLegendItems() => null;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public void ValidateData(bool deep = false)
         {
             if (double.IsNaN(Width) || double.IsNaN(Height))

@@ -25,6 +25,10 @@ namespace ScottPlot.Plottable
         public bool SkipOffScreenPolygons = true;
         public bool RenderSmallPolygonsAsSinglePixels = true;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public Polygons(List<List<(double x, double y)>> polys)
         {
             Polys = polys;

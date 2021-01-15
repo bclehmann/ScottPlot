@@ -21,6 +21,10 @@ namespace ScottPlot.Plottable
         public float MarkerSize = 3;
         public MarkerShape MarkerShape = MarkerShape.filledCircle;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public void ValidateData(bool deep = false)
         {
             if (Xs.Count != Ys.Count)

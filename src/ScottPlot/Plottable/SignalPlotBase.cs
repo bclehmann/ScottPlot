@@ -13,6 +13,9 @@ namespace ScottPlot.Plottable
 {
     public class SignalPlotBase<T> : IPlottable, IHasPoints, IExportable where T : struct, IComparable
     {
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         protected IMinMaxSearchStrategy<T> Strategy = new SegmentedTreeMinMaxSearchStrategy<T>();
         protected bool MaxRenderIndexLowerYSPromise = false;
         protected bool MaxRenderIndexHigherMinRenderIndexPromise = false;
@@ -35,6 +38,7 @@ namespace ScottPlot.Plottable
         private bool ShowMarkers { get; set; } = false; // this gets set in the render loop
 
         protected T[] _Ys;
+
         public virtual T[] Ys
         {
             get => _Ys;

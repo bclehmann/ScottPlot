@@ -14,6 +14,10 @@ namespace ScottPlot.Plottable
         public Color highlightedColor = Color.Red;
         protected bool[] isHighlighted;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public ScatterPlotHighlight(double[] xs, double[] ys, double[] xErr = null, double[] yErr = null) :
                                     base(xs, ys, xErr, yErr) => HighlightClear();
 

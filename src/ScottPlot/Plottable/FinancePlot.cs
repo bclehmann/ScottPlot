@@ -40,6 +40,10 @@ namespace ScottPlot.Plottable
         public Color ColorUp = Color.LightGreen;
         public Color ColorDown = Color.LightCoral;
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public AxisLimits GetAxisLimits()
         {
             // TODO: dont use an array here

@@ -52,6 +52,10 @@ namespace ScottPlot.Plottable
         public Cursor DragCursor => IsHorizontal ? Cursor.WE : Cursor.NS;
         public event EventHandler Dragged = delegate { };
 
+        // misc
+        private readonly Guid _id = Guid.NewGuid();
+        public Guid ID { get => _id; }
+
         public AxisSpan(bool isHorizontal)
         {
             IsHorizontal = isHorizontal;
