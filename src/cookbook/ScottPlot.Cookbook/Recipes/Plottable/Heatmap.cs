@@ -76,7 +76,6 @@ namespace ScottPlot.Cookbook.Recipes.Plottable
 
             newXAxis.Dims.SetAxis(0, 500);
             newYAxis.Dims.SetAxis(-70, 70);
-            newXAxis.Layout(100);
         }
     }
 
