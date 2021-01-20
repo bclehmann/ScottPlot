@@ -95,12 +95,12 @@ namespace ScottPlot.Avalonia
         private void OnMouseUp(object sender, PointerEventArgs e) { Backend.MouseUp(GetInputState(e)); UncaptureMouse(e.Pointer); }
         private void OnDoubleClick(object sender, PointerEventArgs e) => Backend.DoubleClick();
         private void OnMouseWheel(object sender, PointerWheelEventArgs e) => Backend.MouseWheel(GetInputState(e, e.Delta.Y));
-        private void OnMouseMove(object sender, PointerEventArgs e) { Backend.MouseMove(GetInputState(e)); /*base.OnMouseMove(e);*/ }
+        private void OnMouseMove(object sender, PointerEventArgs e) { Backend.MouseMove(GetInputState(e)); base.OnPointerMoved(e); }
 
         private void CaptureMouse(IPointer pointer) => pointer.Capture(this);
         private void UncaptureMouse(IPointer pointer) => pointer.Capture(null);
 
-        private ScottPlot.Control.InputState GetInputState(PointerEventArgs e, double? delta = null) =>
+        private ScottPlot.Control.InputState GetInputState(PointerEventArgs e, double? delta = null) => 
             new ScottPlot.Control.InputState()
             {
                 X = (float)e.GetPosition(this).X,

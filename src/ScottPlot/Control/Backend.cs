@@ -194,19 +194,31 @@ namespace ScottPlot.Control
         private bool IsZoomingRectangle;
         public void MouseMove(InputState input)
         {
+            (float x, float y) previousMouseLocation = (MouseLocationX, MouseLocationY);
+            bool handled = true;
+            const int mouseMoveThreshold = 5;
+
             IsZoomingRectangle = IsMiddleDown || (IsLeftDown && input.AltDown);
-            MouseLocationX = input.X;
-            MouseLocationY = input.Y;
+            
             if (PlottableBeingDragged != null)
                 MouseMovedToDragPlottable(input);
-            else if (IsLeftDown && !input.AltDown)
+            else if (IsLeftDown && !input.AltDown && (input.X - previousMouseLocation.x) * (input.X - previousMouseLocation.x) + (input.Y - previousMouseLocation.y) * (input.Y - previousMouseLocation.y) > mouseMoveThreshold * mouseMoveThreshold)
                 MouseMovedToPan(input);
             else if (IsRightDown)
                 MouseMovedToZoom(input);
             else if (IsZoomingRectangle)
                 MouseMovedToZoomRectangle(input);
             else
+            {
                 MouseMovedWithoutInteraction(input);
+                handled = false;
+            }
+
+			if (handled)
+			{
+                MouseLocationX = input.X;
+                MouseLocationY = input.Y;
+            }
         }
 
         private void MouseMovedToDragPlottable(InputState input)
