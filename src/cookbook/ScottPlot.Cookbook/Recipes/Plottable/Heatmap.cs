@@ -55,6 +55,31 @@ namespace ScottPlot.Cookbook.Recipes.Plottable
         }
     }
 
+    public class HeatmapCustomAxes : IRecipe
+	{
+        public string Category => "Plottable: Heatmap";
+        public string ID => "heatmap_customaxes";
+        public string Title => "Heatmap with Custom Axes";
+        public string Description =>
+            "The axes of a heatmap can be easily customized.";
+
+        public void ExecuteRecipe(Plot plt)
+        {
+            double[,] imageData = DataGen.SampleImageData();
+            plt.AddHeatmap(imageData);
+
+            plt.XAxis.IsVisible = false;
+            plt.YAxis.IsVisible = false;
+
+            var newXAxis = plt.AddAxis(Renderable.Edge.Left, 2);
+            var newYAxis = plt.AddAxis(Renderable.Edge.Bottom, 2);
+
+            newXAxis.Dims.SetAxis(0, 500);
+            newYAxis.Dims.SetAxis(-70, 70);
+            newXAxis.Layout(100);
+        }
+    }
+
     public class Heatmap2dWaveform : IRecipe
     {
         public string Category => "Plottable: Heatmap";
