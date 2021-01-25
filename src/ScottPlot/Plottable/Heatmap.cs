@@ -180,6 +180,7 @@ namespace ScottPlot.Plottable
             using (Graphics gfx = GDI.Graphics(bmp, dims, lowQuality))
             {
                 gfx.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                gfx.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
 
                 double minScale = Math.Min(dims.PxPerUnitX, dims.PxPerUnitY);
 
