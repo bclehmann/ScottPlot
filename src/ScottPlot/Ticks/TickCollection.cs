@@ -56,13 +56,14 @@ namespace ScottPlot.Ticks
                     RecalculatePositionsAutomaticNumeric(dims, 15, 12, 10);
 
                 // second pass calculates density using measured labels produced by the first pass
-                HashSet<(float width, float height)> SeenSizes = new HashSet<(float width, float height)>();
+                HashSet<(float width, float height)> SeenSizes = new HashSet<(float width, float height)>(); // Tracks all sizes that it has traversed through
                 Stack<(float width, float height)> SizesStack = new Stack<(float width, float height)>();
                 int repeats = 0;
-                do
-                {
+                
+                while(repeats < 2){
                     SeenSizes.Add((maxLabelWidth, maxLabelHeight));
                     SizesStack.Push((maxLabelWidth, maxLabelHeight));
+
                     (maxLabelWidth, maxLabelHeight) = MaxLabelSize(tickFont);
                     if (dateFormat)
                         RecalculatePositionsAutomaticDatetime(dims, maxLabelWidth, maxLabelHeight, null);
@@ -74,9 +75,9 @@ namespace ScottPlot.Ticks
                         repeats++;
                     }
 
-                } while (repeats != 2);
+                }
 
-                int backTrackLength = Math.Min(2, SizesStack.Count);
+                int backTrackLength = Math.Min(2, SizesStack.Count); // Look at the last two sizes traversed for the one that gives the most space
                 (float width, float height) candidate = SizesStack.Peek();
                 for (int i = 0; i < backTrackLength; i++)
                 {
