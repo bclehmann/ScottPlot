@@ -56,11 +56,54 @@ namespace ScottPlot.Ticks
                     RecalculatePositionsAutomaticNumeric(dims, 15, 12, 10);
 
                 // second pass calculates density using measured labels produced by the first pass
-                (maxLabelWidth, maxLabelHeight) = MaxLabelSize(tickFont);
+                HashSet<(float width, float height)> SeenSizes = new HashSet<(float width, float height)>();
+                Stack<(float width, float height)> SizesStack = new Stack<(float width, float height)>();
+                int repeats = 0;
+                do
+                {
+                    SeenSizes.Add((maxLabelWidth, maxLabelHeight));
+                    SizesStack.Push((maxLabelWidth, maxLabelHeight));
+                    (maxLabelWidth, maxLabelHeight) = MaxLabelSize(tickFont);
+                    if (dateFormat)
+                        RecalculatePositionsAutomaticDatetime(dims, maxLabelWidth, maxLabelHeight, null);
+                    else
+                        RecalculatePositionsAutomaticNumeric(dims, maxLabelWidth, maxLabelHeight, null);
+
+                    if (SeenSizes.Contains((maxLabelWidth, maxLabelHeight)))
+                    {
+                        repeats++;
+                    }
+
+                } while (repeats != 2);
+
+                int backTrackLength = Math.Min(2, SizesStack.Count);
+                (float width, float height) candidate = SizesStack.Peek();
+                for (int i = 0; i < backTrackLength; i++)
+                {
+                    (float width, float height) tmp = SizesStack.Pop();
+                    if (verticalAxis)
+                    {
+                        if (tmp.height > candidate.height)
+                        {
+                            candidate = tmp;
+                        }
+                    }
+                    else
+                    {
+                        if (tmp.width > candidate.width)
+                        {
+                            candidate = tmp;
+                        }
+                    }
+                }
+
                 if (dateFormat)
-                    RecalculatePositionsAutomaticDatetime(dims, maxLabelWidth, maxLabelHeight, null);
+                    RecalculatePositionsAutomaticDatetime(dims, candidate.width, candidate.height, null);
                 else
-                    RecalculatePositionsAutomaticNumeric(dims, maxLabelWidth, maxLabelHeight, null);
+                    RecalculatePositionsAutomaticNumeric(dims, candidate.width, candidate.height, null);
+
+
+
             }
             else
             {
