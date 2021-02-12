@@ -15,8 +15,16 @@ namespace ScottPlot.Wrappers
             this.IsNull = array == null;
         }
 
+        public static implicit operator ArrayWrapper<T>(T[] array) => new ArrayWrapper<T>(array);
+
         public override T this[int i] { get => array[i]; set => array[i] = value; }
-        public override T[] ToArray() => array;
+        public override T[] ToArray()
+        {
+            T[] tmp = new T[Length];
+            Array.Copy(array, tmp, Length);
+            return tmp;
+        }
+
         public override int Length => array.Length;
     }
 }

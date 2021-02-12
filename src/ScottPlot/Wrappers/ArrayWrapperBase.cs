@@ -12,7 +12,7 @@ namespace ScottPlot.Wrappers
         public abstract int Length { get; }
         public abstract T this[int i] { get; set; }
         public abstract T[] ToArray();
-        public bool IsNull = true;
+        public bool IsNull = false;
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -25,7 +25,9 @@ namespace ScottPlot.Wrappers
         }
 
         public static implicit operator ArrayWrapperBase<T>(T[] array) => new ArrayWrapper<T>(array);
+        public static implicit operator ArrayWrapperBase<T>(Memory<T> memory) => new MemoryWrapper<T>(memory);
         public static implicit operator T[](ArrayWrapperBase<T> arrayWrapper) => arrayWrapper.ToArray();
+
 
         public override bool Equals(object obj)
         {
