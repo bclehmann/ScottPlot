@@ -28,15 +28,30 @@ namespace ScottPlot.Wrappers
         public static implicit operator ArrayWrapperBase<T>(Memory<T> memory) => new MemoryWrapper<T>(memory);
         public static implicit operator T[](ArrayWrapperBase<T> arrayWrapper) => arrayWrapper.ToArray();
 
+        public static bool operator ==(ArrayWrapperBase<T> left, ArrayWrapperBase<T> right)
+        {
+            return EqualityComparer<ArrayWrapperBase<T>>.Default.Equals(left, right);
+        }
 
-        public override bool Equals(object obj)
+        public static bool operator !=(ArrayWrapperBase<T> left, ArrayWrapperBase<T> right)
+        {
+            return !(left == right);
+        }
+
+        public abstract bool WrapSameObject(ArrayWrapperBase<T> other);
+
+
+        public override bool Equals(object obj) // Compares equal to null for null wrapped array/memory
         {
             if (obj == null)
             {
                 return IsNull;
             }
-            return base.Equals(obj);
+
+            return WrapSameObject((ArrayWrapperBase<T>)obj);
         }
+
+        public abstract override int GetHashCode();
     }
 
     public class ArrayWrapperEnumerator<T> : IEnumerator<T>

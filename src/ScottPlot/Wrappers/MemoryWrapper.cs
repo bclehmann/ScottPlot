@@ -22,9 +22,24 @@ namespace ScottPlot.Wrappers
 
         public override int Length => memory.Length;
 
+        public override bool WrapSameObject(ArrayWrapperBase<T> other)
+        {
+            if (other is MemoryWrapper<T> tmp)
+            {
+                return memory.Equals(tmp);
+            }
+
+            return false;
+        }
+
         public override T[] ToArray()
         {
             return memory.ToArray();
+        }
+
+        public override int GetHashCode()
+        {
+            return memory.GetHashCode();
         }
     }
 }

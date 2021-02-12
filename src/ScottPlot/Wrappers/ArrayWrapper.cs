@@ -25,6 +25,21 @@ namespace ScottPlot.Wrappers
             return tmp;
         }
 
+        public override bool WrapSameObject(ArrayWrapperBase<T> other)
+        {
+            if (other is ArrayWrapper<T> tmp)
+            {
+                return tmp.array == array;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return array.GetHashCode();
+        }
+
         public override int Length => array.Length;
     }
 }
