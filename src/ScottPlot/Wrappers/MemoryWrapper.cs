@@ -18,7 +18,7 @@ namespace ScottPlot.Wrappers
 
         public static implicit operator MemoryWrapper<T>(Memory<T> memory) => new MemoryWrapper<T>(memory);
 
-        public override T this[int i] { get => memory.Span[i]; set => memory.Span[i] = value; }
+        public override T this[int i] { get => memory.Span[i]; set => memory.Span[i] = value; } // TODO: Does this copy the memory? If so unsafe code may be appropriate..
 
         public override int Length => memory.Length;
 
