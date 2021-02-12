@@ -14,6 +14,7 @@
 
 using ScottPlot.Plottable;
 using ScottPlot.Statistics;
+using ScottPlot.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -557,8 +558,8 @@ namespace ScottPlot
         /// Scatter plots are slower than Signal plots.
         /// </summary>
         public ScatterPlot AddScatter(
-            double[] xs,
-            double[] ys,
+            ArrayWrapperBase<double> xs,
+            ArrayWrapperBase<double> ys,
             Color? color = null,
             float lineWidth = 1,
             float markerSize = 5,
