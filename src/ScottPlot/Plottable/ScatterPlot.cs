@@ -1,4 +1,5 @@
 ﻿using ScottPlot.Drawing;
+using ScottPlot.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,10 +15,10 @@ namespace ScottPlot.Plottable
     public class ScatterPlot : IPlottable, IHasPoints
     {
         // data
-        public double[] Xs { get; private set; }
-        public double[] Ys { get; private set; }
-        public double[] XError { get; set; }
-        public double[] YError { get; set; }
+        public ArrayWrapperBase<double> Xs { get; private set; }
+        public ArrayWrapperBase<double> Ys { get; private set; }
+        public ArrayWrapperBase<double> XError { get; set; }
+        public ArrayWrapperBase<double> YError { get; set; }
 
         public int PointCount => Ys.Length;
 
@@ -42,7 +43,7 @@ namespace ScottPlot.Plottable
         public int? MinRenderIndex { get; set; }
         public int? MaxRenderIndex { get; set; }
 
-        public ScatterPlot(double[] xs, double[] ys, double[] errorX = null, double[] errorY = null)
+        public ScatterPlot(ArrayWrapperBase<double> xs, ArrayWrapperBase<double> ys, ArrayWrapperBase<double> errorX = null, ArrayWrapperBase<double> errorY = null)
         {
             Xs = xs;
             Ys = ys;
@@ -53,7 +54,7 @@ namespace ScottPlot.Plottable
         /// <summary>
         /// Replace the Xs array with a new one
         /// </summary>
-        public void UpdateX(double[] xs)
+        public void UpdateX(ArrayWrapperBase<double> xs)
         {
             if (xs is null)
                 throw new ArgumentException("xs must not be null");
@@ -66,7 +67,7 @@ namespace ScottPlot.Plottable
         /// <summary>
         /// Replace the Ys array with a new one
         /// </summary>
-        public void UpdateY(double[] ys)
+        public void UpdateY(ArrayWrapperBase<double> ys)
         {
             if (ys is null)
                 throw new ArgumentException("ys must not be null");
@@ -79,7 +80,7 @@ namespace ScottPlot.Plottable
         /// <summary>
         /// Replace Xs and Ys arrays with new ones
         /// </summary>
-        public void Update(double[] xs, double[] ys)
+        public void Update(ArrayWrapperBase<double> xs, ArrayWrapperBase<double> ys)
         {
             if (xs is null)
                 throw new ArgumentException("xs must not be null");
