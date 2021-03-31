@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScottPlot.Statistics.Distributions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,6 +76,79 @@ namespace ScottPlot
             for (int i = 0; i < ys.Length; i++)
                 ys[i] = Math.Cos(i * sinScale + phase * Math.PI * 2) * mult + offset;
             return ys;
+        }
+
+        /// <summary>
+        /// Generates a single value from a given distribution.
+        /// </summary>
+        /// <param name="dist">The IDistribution object to pull from</param>
+        /// <param name="rand">The Random object to use.</param>
+        /// <returns>A single value from the distribution.</returns>
+        public static double RandomValueFromDistribution(IDistribution dist, Random rand)
+        {
+            return dist.GetRandomValue(rand);
+        }
+
+        /// <summary>
+        /// Generates a single value from a normal distribution.
+        /// </summary>
+        /// <param name="rand">The Random object to use.</param>
+        /// <param name="mean">The mean of the distribution. Default 0.</param>
+        /// <param name="stdDev">The standard deviation of the distribution. Default 1.</param>
+        /// <returns>A single value from a normal distribution.</returns>
+        public static double RandomNormalValue(Random rand, double mean = 0, double stdDev = 1)
+        {
+            return RandomValueFromDistribution(new NormalDistribution(mean, stdDev), rand);
+        }
+
+        /// <summary>
+        /// Generates a single value from a uniform distribution.
+        /// </summary>
+        /// <param name="rand">The Random object to use.</param>
+        /// <param name="low">The minimum of the distribution. Default 0.</param>
+        /// <param name="high">The maximum of the distribution. Default 1.</param>
+        /// <returns>A single value from a uniform distribution.</returns>
+        public static double RandomValue(Random rand, double low = 0, double high = 1)
+        {
+            return RandomValueFromDistribution(new UniformDistribution(low, high), rand);
+        }
+
+        /// <summary>
+        /// Generates an array of values from a given distribution.
+        /// </summary>
+        /// <param name="dist">The IDistribution object to pull from</param>
+        /// <param name="rand">The Random object to use.</param>
+        /// <param name="pointCount">The number of points to generate.</param>
+        /// <returns>An array of values from a normal distribution.</returns>
+        public static double[] RandomFromDistribution(IDistribution dist, Random rand, int pointCount)
+        {
+            return Enumerable.Range(0, pointCount).Select(_ => RandomValueFromDistribution(dist, rand)).ToArray();
+        }
+
+        /// <summary>
+        /// Generates an array of values from a normal distribution.
+        /// </summary>
+        /// <param name="rand">The Random object to use.</param>
+        /// <param name="pointCount">The number of points to generate.</param>
+        /// <param name="mean">The mean of the distribution. Default 0.</param>
+        /// <param name="stdDev">The standard deviation of the distribution. Default 1.</param>
+        /// <returns>An array of values from a normal distribution.</returns>
+        public static double[] RandomNormal(Random rand, int pointCount, double mean = 0, double stdDev = 1)
+        {
+            return RandomFromDistribution(new NormalDistribution(mean, stdDev), rand, pointCount);
+        }
+
+        /// <summary>
+        /// Generates an array of values from a uniform distribution.
+        /// </summary>
+        /// <param name="rand">The Random object to use.</param>
+        /// <param name="pointCount">The number of points to generate.</param>
+        /// <param name="low">The minimum of the distribution. Default 0.</param>
+        /// <param name="high">The maximum of the distribution. Default 1.</param>
+        /// <returns>An array of values from a uniform distribution.</returns>
+        public static double[] Random(Random rand, int pointCount, double low = 0, double high = 1)
+        {
+            return RandomFromDistribution(new UniformDistribution(low, high), rand, pointCount);
         }
     }
 }
