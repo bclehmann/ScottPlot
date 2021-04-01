@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ScottPlot.Statistics.Distributions
 {
-    public interface IDistribution
+    public interface IContinuousDistribution
     {
         double PDF(double x);
         double CDF(double x);

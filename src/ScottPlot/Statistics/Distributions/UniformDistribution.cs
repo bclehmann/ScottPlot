@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ScottPlot.Statistics.Distributions
 {
-    public class UniformDistribution : IDistribution
+    public class UniformDistribution : IContinuousDistribution
     {
         public static UniformDistribution StandardUniformDistribution = new UniformDistribution(0, 1);
 

@@ -81,10 +81,10 @@ namespace ScottPlot
         /// <summary>
         /// Generates a single value from a given distribution.
         /// </summary>
-        /// <param name="dist">The IDistribution object to pull from</param>
+        /// <param name="dist">The IContinuousDistribution object to pull from</param>
         /// <param name="rand">The Random object to use.</param>
         /// <returns>A single value from the distribution.</returns>
-        public static double RandomValueFromDistribution(IDistribution dist, Random rand)
+        public static double RandomValueFromDistribution(IContinuousDistribution dist, Random rand)
         {
             return dist.GetRandomValue(rand);
         }
@@ -116,11 +116,11 @@ namespace ScottPlot
         /// <summary>
         /// Generates an array of values from a given distribution.
         /// </summary>
-        /// <param name="dist">The IDistribution object to pull from</param>
+        /// <param name="dist">The IContinuousDistribution object to pull from</param>
         /// <param name="rand">The Random object to use.</param>
         /// <param name="pointCount">The number of points to generate.</param>
         /// <returns>An array of values from a normal distribution.</returns>
-        public static double[] RandomFromDistribution(IDistribution dist, Random rand, int pointCount)
+        public static double[] RandomFromDistribution(IContinuousDistribution dist, Random rand, int pointCount)
         {
             return Enumerable.Range(0, pointCount).Select(_ => RandomValueFromDistribution(dist, rand)).ToArray();
         }

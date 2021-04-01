@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ScottPlot.Statistics.Distributions
 {
-    public class NormalDistribution : IDistribution
+    public class NormalDistribution : IContinuousDistribution
     {
         public static NormalDistribution StandardNormalDistribution = new NormalDistribution(0, 1);
 
