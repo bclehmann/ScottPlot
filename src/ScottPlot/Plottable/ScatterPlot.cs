@@ -1,4 +1,5 @@
-﻿using ScottPlot.Drawing;
+﻿using Microsoft.Extensions.ObjectPool;
+using ScottPlot.Drawing;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,8 +12,25 @@ namespace ScottPlot.Plottable
     /// The scatter plot renders X/Y pairs as points and/or connected lines.
     /// Scatter plots can be extremely slow for large datasets, so use Signal plots in these situations.
     /// </summary>
+
+    public class PenPooledObjectPolicy : PooledObjectPolicy<Pen>
+    {
+        public override Pen Create()
+        {
+            return new Pen(Color.Black);
+        }
+
+        public override bool Return(Pen obj)
+        {
+            return true;
+        }
+    }
+
+
     public class ScatterPlot : IPlottable, IHasPoints
     {
+        private static ObjectPool<Pen> pen_pool = new DefaultObjectPool<Pen>(new PenPooledObjectPolicy());
+
         // data
         public double[] Xs { get; private set; }
         public double[] Ys { get; private set; }
@@ -198,9 +216,25 @@ namespace ScottPlot.Plottable
                 return;
 
             using (var gfx = GDI.Graphics(bmp, dims, lowQuality))
-            using (var penLine = GDI.Pen(Color, LineWidth, LineStyle, true))
-            using (var penLineError = GDI.Pen(Color, ErrorLineWidth, LineStyle.Solid, true))
+            //using (var penLine = GDI.Pen(Color, LineWidth, LineStyle, true))
+            //using (var penLineError = GDI.Pen(Color, ErrorLineWidth, LineStyle.Solid, true))
             {
+                var penLine = pen_pool.Get();
+                penLine.Color = Color;
+                penLine.Width = (float)LineWidth;
+                //penLine.DashStyle = LineStyle;
+                penLine.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+                penLine.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                penLine.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
+
+                var penLineError = pen_pool.Get();
+                penLineError.Color = Color;
+                penLineError.Width = (float)ErrorLineWidth;
+                //penLine.DashStyle = LineStyle;
+                penLineError.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+                penLineError.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                penLineError.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
+
                 int from = MinRenderIndex ?? 0;
                 int to = MaxRenderIndex ?? (Xs.Length - 1);
                 PointF[] points = new PointF[to - from + 1];
@@ -267,6 +301,9 @@ namespace ScottPlot.Plottable
                 if ((MarkerSize > 0) && (MarkerShape != MarkerShape.none))
                     for (int i = 0; i < points.Length; i++)
                         MarkerTools.DrawMarker(gfx, points[i], MarkerShape, MarkerSize, Color);
+
+                pen_pool.Return(penLine);
+                pen_pool.Return(penLineError);
             }
         }
 
