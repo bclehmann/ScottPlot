@@ -309,10 +309,10 @@ namespace ScottPlot.Plottable
                 return new AxisLimits();
 
             return new AxisLimits(
-                xMin: OffsetX,
-                xMax: OffsetX + DataWidth * CellWidth,
-                yMin: OffsetY,
-                yMax: OffsetY + DataHeight * CellHeight);
+                xMin: OffsetX - CellWidth / 2,
+                xMax: OffsetX + DataWidth * CellWidth - CellWidth / 2,
+                yMin: OffsetY - CellHeight / 2,
+                yMax: OffsetY + DataHeight * CellHeight - CellHeight / 2);
         }
 
         /// <summary>
@@ -358,10 +358,10 @@ namespace ScottPlot.Plottable
             gfx.InterpolationMode = Interpolation;
             gfx.PixelOffsetMode = PixelOffsetMode.Half;
 
-            int fromX = (int)Math.Round(dims.GetPixelX(OffsetX));
-            int fromY = (int)Math.Round(dims.GetPixelY(OffsetY + DataHeight * CellHeight));
-            int width = (int)Math.Round(dims.GetPixelX(OffsetX + DataWidth * CellWidth) - fromX);
-            int height = (int)Math.Round(dims.GetPixelY(OffsetY) - fromY);
+            int fromX = (int)Math.Round(dims.GetPixelX(OffsetX - CellWidth / 2));
+            int fromY = (int)Math.Round(dims.GetPixelY(OffsetY + DataHeight * CellHeight - CellHeight / 2));
+            int width = (int)Math.Round(dims.GetPixelX(OffsetX + DataWidth * CellWidth - CellWidth / 2) - fromX);
+            int height = (int)Math.Round(dims.GetPixelY(OffsetY - CellHeight / 2) - fromY);
 
             Rectangle destRect = new(fromX, fromY, width, height);
 

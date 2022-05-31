@@ -16,10 +16,10 @@ namespace ScottPlot.Plottable
             gfx.InterpolationMode = Interpolation;
             gfx.PixelOffsetMode = PixelOffsetMode.Half;
 
-            int drawFromX = (int)Math.Round(dims.GetPixelX(XMin));
-            int drawFromY = (int)Math.Round(dims.GetPixelY(YMax));
-            int drawWidth = (int)Math.Round(dims.GetPixelX(XMax) - drawFromX);
-            int drawHeight = (int)Math.Round(dims.GetPixelY(YMin) - drawFromY);
+            int drawFromX = (int)Math.Round(dims.GetPixelX(XMin - CellWidth / 2));
+            int drawFromY = (int)Math.Round(dims.GetPixelY(YMax - CellHeight / 2));
+            int drawWidth = (int)Math.Round(dims.GetPixelX(XMax - CellWidth / 2) - drawFromX);
+            int drawHeight = (int)Math.Round(dims.GetPixelY(YMin - CellHeight / 2) - drawFromY);
             Rectangle destRect = new Rectangle(drawFromX, drawFromY, drawWidth, drawHeight);
             ImageAttributes attr = new ImageAttributes();
             attr.SetWrapMode(WrapMode.TileFlipXY);
@@ -35,7 +35,7 @@ namespace ScottPlot.Plottable
 
         public override AxisLimits GetAxisLimits()
         {
-            return new AxisLimits(XMin, XMax, YMin, YMax);
+            return new AxisLimits(XMin - CellWidth / 2, XMax - CellWidth / 2, YMin - CellHeight / 2, YMax - CellHeight / 2);
         }
     }
 }
