@@ -14,13 +14,14 @@ namespace ScottPlot
         {
             paint.StrokeWidth = (float)stroke.Width;
             paint.Color = stroke.Color.ToSKColor();
+            paint.PathEffect = null;
             paint.Style = SKPaintStyle.Stroke;
         }
 
         public static void SetFill(this SKPaint paint, Fill fill, byte alpha = 255)
         {
             paint.Color = fill.Color.WithAlpha(alpha).ToSKColor();
-            paint.PathEffect = null; // TODO: Make this respect HatchStyle
+            paint.PathEffect = fill.Hatch?.GetPathEffect();
             paint.Style = SKPaintStyle.Fill;
         }
     }

@@ -82,12 +82,17 @@ namespace ScottPlot.Plottables
                 path.ArcTo(rect, -sweeps[i] / 2, sweeps[i], false);
                 path.Close();
 
-                paint.SetFill(Slices[i].Fill);
-                surface.Canvas.DrawPath(path, paint);
+                using (var _ = new SKAutoCanvasRestore(surface.Canvas)) // We only want to clip on fill, otherwise we'll thin out the stroke too much
+                {
+                    surface.Canvas.ClipPath(path);
+
+                    paint.SetFill(Slices[i].Fill);
+                    surface.Canvas.DrawPath(path, paint);
+                }
 
                 paint.SetStroke(Stroke);
                 surface.Canvas.DrawPath(path, paint);
-
+                
                 path.Reset();
                 surface.Canvas.RestoreToCount(savePoint);
 
