@@ -1,6 +1,6 @@
 namespace ScottPlot.DataSources;
 
-internal class ListWrapper<T> : IList<T>
+internal class ListWrapper<T> : IList<T>, IReadOnlyList<T>
 {
     public int Count { get; private set; } = 0;
     private readonly List<T> _list;
@@ -175,14 +175,14 @@ public class SignalXYSourceGenericList<Tx, Ty> : ISignalXYSourceGeneric, IDataSo
     
     private ListWrapper<Pixel> buffer = new(new List<Pixel>());
 
-    public IList<Pixel> GetPixelsToDrawGeneric(RenderPack rp, IAxes axes, ConnectStyle connectStyle)
+    public IReadOnlyList<Pixel> GetPixelsToDrawGeneric(RenderPack rp, IAxes axes, ConnectStyle connectStyle)
     {
         return Rotated
             ? GetPixelsToDrawVertically(rp, axes, connectStyle)
             : GetPixelsToDrawHorizontally(rp, axes, connectStyle);
     }
 
-    public IList<Pixel> GetPixelsToDrawHorizontally(RenderPack rp, IAxes axes, ConnectStyle connectStyle)
+    public IReadOnlyList<Pixel> GetPixelsToDrawHorizontally(RenderPack rp, IAxes axes, ConnectStyle connectStyle)
     {
         // determine the range of data in view
         (Pixel[] PointBefore, int dataIndexFirst) = GetFirstPointX(axes);
