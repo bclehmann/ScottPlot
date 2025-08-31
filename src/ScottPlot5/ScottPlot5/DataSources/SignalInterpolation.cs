@@ -6,9 +6,9 @@ public static class SignalInterpolation
     /// If the point to the left of the graph is extremely far outside the data area, 
     /// modify it using interpolation so it's closer to the data area to prevent render artifacts.
     /// </summary>
-    public static void InterpolateBeforeX(RenderPack rp, Pixel[] pixels, ConnectStyle connectStyle)
+    public static void InterpolateBeforeX(RenderPack rp, IList<Pixel> pixels, ConnectStyle connectStyle)
     {
-        if (pixels.Length <= 2)
+        if (pixels.Count <= 2)
             return;
 
         Pixel lastOutsidePoint = pixels[0];
@@ -68,13 +68,13 @@ public static class SignalInterpolation
     /// If the point to the right of the graph is extremely far outside the data area, 
     /// modify it using interpolation so it's closer to the data area to prevent render artifacts.
     /// </summary>
-    public static void InterpolateAfterX(RenderPack rp, Pixel[] pixels, ConnectStyle connectStyle)
+    public static void InterpolateAfterX(RenderPack rp, IList<Pixel> pixels, ConnectStyle connectStyle)
     {
-        if (pixels.Length <= 2)
+        if (pixels.Count <= 2)
             return;
 
-        Pixel lastInsidePoint = pixels[pixels.Length - 2];
-        Pixel firstOutsidePoint = pixels[pixels.Length - 1];
+        Pixel lastInsidePoint = pixels[pixels.Count - 2];
+        Pixel firstOutsidePoint = pixels[pixels.Count - 1];
         if (firstOutsidePoint.X == lastInsidePoint.X)
             return;
 
@@ -101,7 +101,7 @@ public static class SignalInterpolation
             throw new NotImplementedException(connectStyle.ToString());
         }
 
-        pixels[pixels.Length - 1] = new Pixel(x, y);
+        pixels[pixels.Count - 1] = new Pixel(x, y);
     }
 
     /// <summary>

@@ -1,6 +1,121 @@
 namespace ScottPlot.DataSources;
 
-public class SignalXYSourceGenericList<Tx, Ty> : ISignalXYSource, IDataSource, IGetNearest
+internal class ListWrapper<T> : IList<T>
+{
+    public int Count { get; private set; } = 0;
+    private readonly List<T> _list;
+    
+    public ListWrapper(List<T> list)
+    {
+        _list = list;
+    }
+    
+    public IEnumerator<T> GetEnumerator()
+    {
+        for (int i = 0; i < Count; i++)
+            yield return this[i];
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public void Add(T item)
+    {
+        if (Count < _list.Count)
+        {
+            _list[Count] = item;
+        }
+        else
+        {
+            _list.Add(item);
+        }
+        Count++;
+    }
+
+    public void Clear()
+    {
+        Count = 0;
+    }
+
+    public bool Contains(T item)
+    {
+        for (int i = 0; i < Count; i++)
+        {
+            if (EqualityComparer<T>.Default.Equals(this[i], item))
+                return true;
+        }
+        return false;
+    }
+
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+        if (array.Length - arrayIndex < Count)
+        {
+            throw new ArgumentException("arrayIndex is out of bounds");
+        }
+        for (int i = 0; i < Count; i++)
+        {
+            array[i + arrayIndex] = this[i];
+        }
+    }
+
+    public bool Remove(T item)
+    {
+        if (_list.Remove(item))
+        {
+            Count--;
+            return true;
+        }
+        return false;
+    }
+
+    public bool IsReadOnly => false;
+    public int IndexOf(T item)
+    {
+        var index = _list.IndexOf(item);
+        return index < Count ? index : -1;
+    }
+
+    public void Insert(int index, T item)
+    {
+        if (index < 0 || index > Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+        _list.Insert(index, item);
+        Count++;
+    }
+
+    public void RemoveAt(int index)
+    {
+        if (index < 0 || index >= Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+        _list.RemoveAt(index);
+        Count--;
+    }
+
+    public T this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+            return _list[index];
+        }
+        set
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+            _list[index] = value;
+        }
+    }
+}
+
+public class SignalXYSourceGenericList<Tx, Ty> : ISignalXYSourceGeneric, IDataSource, IGetNearest
 {
     private readonly IReadOnlyList<Tx> Xs;
     private readonly IReadOnlyList<Ty> Ys;
@@ -57,15 +172,17 @@ public class SignalXYSourceGenericList<Tx, Ty> : ISignalXYSource, IDataSource, I
             ? new AxisLimits(yRange, xRange)
             : new AxisLimits(xRange, yRange);
     }
+    
+    private ListWrapper<Pixel> buffer = new(new List<Pixel>());
 
-    public Pixel[] GetPixelsToDraw(RenderPack rp, IAxes axes, ConnectStyle connectStyle)
+    public IList<Pixel> GetPixelsToDrawGeneric(RenderPack rp, IAxes axes, ConnectStyle connectStyle)
     {
         return Rotated
             ? GetPixelsToDrawVertically(rp, axes, connectStyle)
             : GetPixelsToDrawHorizontally(rp, axes, connectStyle);
     }
 
-    public Pixel[] GetPixelsToDrawHorizontally(RenderPack rp, IAxes axes, ConnectStyle connectStyle)
+    public IList<Pixel> GetPixelsToDrawHorizontally(RenderPack rp, IAxes axes, ConnectStyle connectStyle)
     {
         // determine the range of data in view
         (Pixel[] PointBefore, int dataIndexFirst) = GetFirstPointX(axes);
@@ -90,17 +207,29 @@ public class SignalXYSourceGenericList<Tx, Ty> : ISignalXYSource, IDataSource, I
             rightOutsidePoint = PointBefore;
         }
 
+        buffer.Clear();
         // combine with one extra point before and after
-        Pixel[] points = [.. leftOutsidePoint, .. VisiblePoints, .. rightOutsidePoint];
+        foreach (Pixel pixel in leftOutsidePoint)
+        {
+            buffer.Add(pixel);
+        }
+        foreach (Pixel pixel in VisiblePoints)
+        {
+            buffer.Add(pixel);
+        }
+        foreach (Pixel pixel in rightOutsidePoint)
+        {
+            buffer.Add(pixel);
+        }
 
         // use interpolation at the edges to prevent points from going way off the screen
         if (leftOutsidePoint.Length > 0)
-            SignalInterpolation.InterpolateBeforeX(rp, points, connectStyle);
+            SignalInterpolation.InterpolateBeforeX(rp, buffer, connectStyle);
 
         if (rightOutsidePoint.Length > 0)
-            SignalInterpolation.InterpolateAfterX(rp, points, connectStyle);
+            SignalInterpolation.InterpolateAfterX(rp, buffer, connectStyle);
 
-        return points;
+        return buffer;
     }
 
     public Pixel[] GetPixelsToDrawVertically(RenderPack rp, IAxes axes, ConnectStyle connectStyle)
